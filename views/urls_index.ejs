@@ -7,8 +7,15 @@
      <% include partials/_header %>
      <% for(var i in urls) { %>
      <li><%= i %> : <%= urls[i] %></li>
+     <form method="POST" action="/urls">
+        <button><a href="/urls/<%= i %>">update</a></button>
+     </form>
+     <form method="POST" action="/urls/<%= i %>/delete">
+        <button type="submit" value="remove" name="delete">Remove</button>
+     </form>
      <% } %>
-     <a href="/urls/new">Create New Url</a>
+      <button><a href="/urls/new">Create New URL</a></button>
+
 </body>
 </html>
 
