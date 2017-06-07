@@ -49,11 +49,10 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
-  let urls = urlDatabase;
-  let longURL = urls[shortURL];
+  let longURL = urlDatabase[shortURL];
   // console.log(req.body.id, "req.body")
-  console.log(urls[req.body.id]);
-  console.log(longURL, "longURL")
+  // console.log(urls[req.body.id]);
+  // console.log(longURL, "longURL")
   res.redirect(longURL);
 });
 
