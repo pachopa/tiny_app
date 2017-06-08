@@ -1,13 +1,13 @@
 
-<h1>Hello</h1>
-<h2>This is Chris's' tinyapp</h2>
+<h1>Welcome</h1>
 <% if(username) { %>
-<p>username : <%= username %></p>
+<h2>This is <%= username %>'s tinyapp</h2>
 <form method="POST" action="/logout">
   <button type="submit">logout</button>
 </form>
-<% } else { %> 
-<form action="/login" method="POST" style="margin:150px;">
+<% } else { %>
+<h2>This is the tinyapp website</h2> 
+<form action="/login" method="POST" style="margin-bottom: 10px;">
       <label for="userId">Login</label>
       <input id="userId" type="text" name="username" style="width: 100px">
       <input type="submit" value="Login">
