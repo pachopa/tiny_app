@@ -67,7 +67,8 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 //add a new longURL
 app.get("/urls/new", (req, res) => {
-  let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  let user_id = req.cookies["user_id"]
+  let templateVars = { urls: urlDatabase, user: users[user_id] };
   res.render("urls_new", templateVars);
 });
 //go to the website
@@ -78,7 +79,8 @@ app.get("/u/:shortURL", (req, res) => {
 });
 //list of the specific shortURl and longURL
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id, urls: urlDatabase, username: req.cookies["username"] };
+  let user_id = req.cookies["user_id"]
+  let templateVars = { shortURL: req.params.id, urls: urlDatabase, user: users[user_id] };
   res.render("urls_show", templateVars);
 });
 //edit the longURL
@@ -89,16 +91,38 @@ app.post("/urls/:id", (req, res) => {
   urls[shortURL] = 'http://' + newLongURL;
   res.redirect('/urls')     
 });
+
+app.get("/login", (req, res) => {
+  let templateVars = { user: users };
+  res.render("urls_login", templateVars);
+});
 //generate a new user
 app.post("/login", (req, res) => {
-  let userId = req.body.username;
-  res.cookie('username', userId);
-  res.redirect('/urls')     
+  let email = req.body.email
+  let password = req.body.password
+  if(email === '' || password === ''){
+    res.status(400).send('Email and Password cannot be empty.<br><a href="/login">return login</a>')
+  }
+  //question how can i compare users email is existed or not
+  // for(let userid in users) {
+  //   if(!users[userid].email === email) {
+  //     res.status(400).send('Email and Password are not existed.<br><a href="/login">return login</a>')
+  //   }
+  // }
+  for(let userid in users) {
+    if(users[userid].email === email && users[userid].password === password) {
+     res.cookie('user_id', userid)
+     res.redirect('/urls')  
+    }
+  }
+  res.status(400).send('Email and Password are not matched.<br><a href="/login">return login</a>')
 });
 //logout and clear cookie
 app.post("/logout", (req, res) => {
-  let userId = req.cookies.username;
-  res.clearCookie("username", userId); 
+  let userId = req.cookies.user_id;
+  //question req.cookies[user_id] <- when i use why i get the error
+  //console.log(userId)
+  res.clearCookie("user_id", userId); 
   res.redirect('/urls')  
 });
 //register page
