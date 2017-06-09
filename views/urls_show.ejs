@@ -5,7 +5,7 @@
 </head>
 <body>
      <% include partials/_header %>
-     <li><%= shortURL %> : <%= urls[shortURL] %></li>
+     <li><%= shortURL %> : <%= urls[shortURL].longURL %></li>
      <form method="POST" action="/urls/<%= shortURL %>">
         <label for="longURL">Enter a New URL:</label>
         <input id="longURL" type="text" name="update" placeholder="http://" style="width: 300px">
