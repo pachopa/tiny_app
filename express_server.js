@@ -60,7 +60,7 @@ function urlsForUser(id) {
 }
 //check user
 function userIsNotLoggedIn(userid) {
-  if(!userid) {
+  if(!userid) { 
     return null;
   }
   return userid; 
@@ -123,8 +123,15 @@ app.post("/urls", (req, res) => {
 //delete the URL
 app.post("/urls/:id/delete", (req, res) => {
   let shortURL = req.params.id;
-  delete urlDatabase[shortURL];
-  res.redirect('/urls')
+  let user_id = req.session.user_id;
+  let loggedInUser = userIsNotLoggedIn(user_id);
+  if(!loggedInUser) {
+    res.redirect('/login');
+    return ;
+  } else {
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
+  }
 });
 //add a new longURL
 app.get("/urls/new", (req, res) => {
@@ -154,18 +161,21 @@ app.get("/urls/:id", (req, res) => {
   let user_id = req.session.user_id;
   let templateVars = { shortURL: req.params.id, urls: urlDatabase, user: users[user_id] };
   let loggedInUser = userIsNotLoggedIn(user_id)
-  if(!loggedInUser) {
-    res.status(400).send(`You shoud login in First or Register<br>Go to 
-    <a href="/login">login</a> in page<br>or go to <a href="/register">
-    Register</a> page`);
-  }
-  if(req.params.id in urlDatabase) {
-    res.render("urls_show", templateVars);
-    return ;
-  } else {
+  if(loggedInUser){
+    if(req.params.id in urlDatabase) {
+      res.render("urls_show", templateVars);
+      return ;
+    } else {
     res.status(400).send(`You shoud put right shortURL or the shortURL its not yours<br>Go to 
     <a href="/login">login</a> in page<br>or go to <a href="/register">
     Register</a> page`);
+    return ;
+    }
+  } else {
+    res.status(400).send(`You shoud login in First or Register<br>Go to 
+    <a href="/login">login</a> in page<br>or go to <a href="/register">
+    Register</a> page`);
+    return ;
   }
 });
 //edit the longURL
@@ -174,11 +184,19 @@ app.post("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   let urls = urlDatabase;
   let userid = req.session.user_id;
-  urlDatabase[shortURL] = {
-    id : userid,
-    longURL: newLongURL
+  let loggedInUser = userIsNotLoggedIn(userid);
+  if(loggedInUser) {
+    urlDatabase[shortURL] = {
+      id : userid,
+      longURL: newLongURL
+    }
+    res.redirect('/urls')
+  } else {
+    res.status(400).send(`You shoud login in First or Register<br>Go to 
+    <a href="/login">login</a> in page<br>or go to <a href="/register">
+    Register</a> page`);
+    return ;
   }
-  res.redirect('/urls') 
 });
 //login page
 app.get("/login", (req, res) => {
