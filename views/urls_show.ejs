@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- 
 </head>
 <body>
      <% include partials/_header %>
@@ -11,5 +10,6 @@
         <input id="longURL" type="text" name="update" placeholder="http://" style="width: 300px">
         <input type="submit" value="update">
      </form>
+     <a href="<%= urls[shortURL].longURL %>">Go to the longURL directly</a>
 </body>
 </html>
